@@ -27,6 +27,30 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (
+    formData.email === process.env.ADMIN_EMAIL &&
+    formData.password === process.env.ADMIN_PASSWORD
+  ) {
+    const data = {
+      id: "admin",
+      role: "admin",
+      email: process.env.ADMIN_EMAIL,
+      name: "Admin",
+      profileImage:
+        "https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-account-man-user-icon.png",
+      isVerified: true,
+    };
+    const token = generateToken(data);
+    const response = NextResponse.json({
+      message: "Login Success",
+      success: true,
+      route: `/admin/dashboard`,
+      user: data,
+    });
+    setTokenCookie(response, token);
+    return response;
+  }
+
   // User login logic
   const user = await User.findOne({ email: formData.email });
   if (!user) {
@@ -43,7 +67,7 @@ export async function POST(req: NextRequest) {
   if (isPasswordValid) {
     const data = {
       id: user._id,
-      role: user.role,
+      role: "user",
       email: user.email,
       name: user.name,
       profilImage: user.profileImage,

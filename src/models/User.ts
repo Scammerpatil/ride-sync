@@ -18,6 +18,19 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  aadhardcard: {
+    type: String,
+    required: true,
+  },
+  drivingLicense: {
+    type: String,
+    required: true,
+  },
+  isVerified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   password: {
     type: String,
     required: true,

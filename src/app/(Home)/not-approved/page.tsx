@@ -6,6 +6,17 @@ import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
+  const handleLogout = () => {
+    const res = axios.get("/api/auth/logout");
+    toast.promise(res, {
+      loading: "Logout...",
+      success: () => {
+        router.push("/login");
+        return "Logout Success";
+      },
+      error: "Logout Failed",
+    });
+  };
   return (
     <section className="bg-base-300 h-[calc(100vh-6rem)] flex items-center">
       <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
@@ -18,12 +29,7 @@ export default function Home() {
             integrity, cloud storage, and tamper-proof verification.
           </p>
           <button
-            onClick={() => {
-              axios.get("/api/auth/logout").then(() => {
-                toast.success("Logout Success");
-                router.push("/");
-              });
-            }}
+            onClick={handleLogout}
             className="btn btn-primary text-base font-medium text-center rounded-lg mr-4"
           >
             Logout

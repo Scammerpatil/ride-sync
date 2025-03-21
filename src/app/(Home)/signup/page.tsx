@@ -15,6 +15,8 @@ const SignUp = () => {
     contact: "",
     profileImage: "",
     password: "",
+    aadhardcard: "",
+    drivingLicense: "",
     otp: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +28,8 @@ const SignUp = () => {
       !formData.contact ||
       !formData.profileImage ||
       !formData.email ||
+      !formData.aadhardcard ||
+      !formData.drivingLicense ||
       !formData.password
     ) {
       toast.error("Please fill all the fields");
@@ -79,7 +83,12 @@ const SignUp = () => {
       toast.error("Something went wrong!!!");
     }
   };
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfileImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    folderName: string,
+    imageName: string,
+    path: string
+  ) => {
     if (!formData.name) {
       toast.error("Name is required for images");
       return;
@@ -92,8 +101,8 @@ const SignUp = () => {
       }
       const imageResponse = axios.postForm("/api/helper/upload-img", {
         file,
-        name: formData.name,
-        folderName: "profileImages",
+        name: imageName,
+        folderName: folderName,
       });
       console.log(imageResponse);
       toast.promise(imageResponse, {
@@ -101,7 +110,7 @@ const SignUp = () => {
         success: (data: AxiosResponse) => {
           setFormData({
             ...formData,
-            profileImage: data.data.path,
+            [path]: data.data.path,
           });
           return "Image Uploaded Successfully";
         },
@@ -165,12 +174,60 @@ const SignUp = () => {
                 </button>
               </div>
 
-              <input
-                type="file"
-                className="file-input file-input-bordered file-input-primary w-full text-base-content"
-                accept="image/* .jpg"
-                onChange={handleProfileImageChange}
-              />
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend text-base">
+                  Profile Image
+                </legend>
+                <input
+                  type="file"
+                  className="file-input file-input-bordered file-input-primary w-full text-base-content"
+                  accept="image/* .jpg"
+                  onChange={(e) => {
+                    handleProfileImageChange(
+                      e,
+                      "profileImage",
+                      formData.name,
+                      "profileImage"
+                    );
+                  }}
+                />
+              </fieldset>
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend text-base">
+                  Aadhar Card Image
+                </legend>
+                <input
+                  type="file"
+                  className="file-input file-input-bordered file-input-primary w-full text-base-content"
+                  accept="image/* .jpg"
+                  onChange={(e) => {
+                    handleProfileImageChange(
+                      e,
+                      "documents",
+                      `${formData.name}-aadharCard`,
+                      "aadhardcard"
+                    );
+                  }}
+                />
+              </fieldset>
+              <fieldset className="fieldset">
+                <legend className="fieldset-legend text-base">
+                  Driving Licence Image
+                </legend>
+                <input
+                  type="file"
+                  className="file-input file-input-bordered file-input-primary w-full text-base-content"
+                  accept="image/* .jpg"
+                  onChange={(e) => {
+                    handleProfileImageChange(
+                      e,
+                      "documents",
+                      `${formData.name}-driverLicense`,
+                      "drivingLicense"
+                    );
+                  }}
+                />
+              </fieldset>
 
               <label className="input input-primary input-bordered w-full flex items-center gap-2">
                 <input
